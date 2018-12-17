@@ -22,23 +22,23 @@ Located under the library directory and utilizes a helper utility script located
 
 Perform package manipulations on guest disk image:
 
-Install packages
+* Install packages
 
-Remove packages
+* Remove packages
 
-List installed packages
+* List installed packages
 
 ## Documentation:
 
-Can be viewed inside each module under the "DOCUMENTATION" variable.
+Can be viewed inside each module under the `DOCUMENTATION` variable.
 
 ## Examples:
 
-Can be viewed inside each module under the "EXAMPLES" variable.
+Can be viewed inside each module under the `EXAMPLES` variable.
 
 ## Results:
 
-Can be viewed inside each module under the "RETURN" variable.
+Can be viewed inside each module under the `RETURN` variable.
 
 ## Installation
 
