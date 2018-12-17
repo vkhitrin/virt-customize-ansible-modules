@@ -1,0 +1,9 @@
+# Ignore all
+/*
+
+# But..
+!.gitignore
+!README.md
+!COPYING.md
+!module_utils/
+!library/
