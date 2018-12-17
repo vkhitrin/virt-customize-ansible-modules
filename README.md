@@ -12,6 +12,22 @@ virt-customize Ansible modules allow users to use Ansible to automate commonly u
 * Python >= 2.7.5
 * [guestfs python bindings](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv)
 
+## Modules:
+
+Located under the library directory and utilizes a helper utility script located in module_utils
+
+### virt_customize_packages:
+
+**Note:** Currently works only on images using `dnf`, `yum` and `apt` package managers.
+
+Perform package manipulations on guest disk image:
+
+Install packages
+
+Remove packages
+
+List installed packages
+
 ## Documentation:
 
 Can be viewed inside each module under the "DOCUMENTATION" variable.
@@ -28,7 +44,7 @@ Can be viewed inside each module under the "RETURN" variable.
 
 TO BE IMPLEMENTED IN A PROPER WAY
 
-Make sure ansible and guestfs bindings are installed.
+Make sure ansible installed on the ansible-controller node and guestfs bindings are installed on the target host.
 
 For now, copy `library` and `module_utils` directories to a directory where your playbook resides in.
 
@@ -40,4 +56,4 @@ Delete `library` and `module_utils` directories.
 
 ## License
 
-This project is licensed under GPL-3.0 License. Please see the (COPYING.md)[https://github.com/vkhitrin/virt-customize-ansible-modules/blob/master/COPYING.md)] for more information
+This project is licensed under GPL-3.0 License. Please see the [COPYING.md](https://github.com/vkhitrin/virt-customize-ansible-modules/blob/master/COPYING.md) for more information.
