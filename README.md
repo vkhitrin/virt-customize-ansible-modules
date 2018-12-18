@@ -10,7 +10,9 @@ virt-customize Ansible modules allow users to use Ansible to automate commonly u
 
 * Ansible >= 2.5.11
 * Python >= 2.7.5
-* [guestfs python bindings](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv)
+* [guestfs python bindings](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv) >= 1.36.10
+
+May work on earlier releases, tested on the above
 
 ## Modules:
 
