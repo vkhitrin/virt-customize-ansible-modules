@@ -30,6 +30,10 @@ Perform package manipulations on guest disk image:
 
 * List installed packages
 
+### virt_customize_command:
+
+Performs commands inside guest disk image
+
 ## Documentation:
 
 Can be viewed inside each module under the `DOCUMENTATION` variable.
