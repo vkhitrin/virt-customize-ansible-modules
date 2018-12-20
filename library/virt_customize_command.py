@@ -192,10 +192,6 @@ def main():
 
     mutual_exclusive_args = [['command', 'shell']]
     required_one_of_args = [['command', 'shell']]
-    required_togheter_args = [
-        ['shell', 'image'],
-        ['command', 'image']
-    ]
     module = AnsibleModule(
         argument_spec=dict(
             image=dict(required=True, type='str'),
