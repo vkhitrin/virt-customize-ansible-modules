@@ -163,7 +163,8 @@ def packages(guest, module):
 
             if package_manager in PACKAGE_MANAGERS:
                 try:
-                    result = guest.sh_lines('{command} {packages}'.format(command=PACKAGE_MANAGERS[package_manager][state], packages=packages_string))
+                    result = guest.sh_lines('{command} {packages}'.format(command=PACKAGE_MANAGERS[package_manager][state],
+                                                                          packages=packages_string))
                 except Exception as e:
                     err = True
                     results['failed'] = True
@@ -244,8 +245,13 @@ def packages(guest, module):
 
 def main():
 
-    mutual_exclusive_args = [['name', 'list'], ['list', 'state']]
+    mutual_exclusive_args = [
+            ['name', 'list'],
+            ['list', 'state']
+    ]
     required_togheter_args = [['name', 'state']]
+    required_one_of_args = [['name', 'list']]
+
     module = AnsibleModule(
         argument_spec=dict(
             image=dict(required=True, type='str'),
@@ -257,6 +263,7 @@ def main():
             debug=dict(required=False, type='bool', default=False)
         ),
         mutually_exclusive=mutual_exclusive_args,
+        required_one_of=required_one_of_args,
         required_together=required_togheter_args,
         supports_check_mode=True
     )
