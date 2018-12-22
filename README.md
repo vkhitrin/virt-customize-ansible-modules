@@ -34,6 +34,14 @@ Perform package manipulations on guest disk image:
 
 Performs commands inside guest disk image
 
+### virt_customize_upload:
+
+**Note:** Currently doesn't check if file exists on guest disk image
+
+**Note:** remote_src is not yet implemented
+
+Uploads files/directories to guest disk image
+
 ## Documentation:
 
 Can be viewed inside each module under the `DOCUMENTATION` variable.
