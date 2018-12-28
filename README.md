@@ -42,6 +42,14 @@ Performs commands inside guest disk image
 
 Uploads files/directories to guest disk image
 
+### virt_customize_download:
+
+**Note:** Currently doesn't check if file exists on guest disk image
+
+**Note:** remote_src is not yet implemented
+
+Downloads files/directories from guest disk image
+
 ## Documentation:
 
 Can be viewed inside each module under the `DOCUMENTATION` variable.
