@@ -13,10 +13,10 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
 
 DOCUMENTATION = """
 module: virt_customize_download
-short_description: Performs commands on guest images
+short_description: Downloads files/directories from guest disk image
 version_added: "2.5.11"
 description:
-    - Performs commands on guest images
+    - Downloads files/directories from guest disk image
 options:
     image:
         required: True

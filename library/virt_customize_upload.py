@@ -12,11 +12,12 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'supported_by': 'community'}
 
 DOCUMENTATION = """
-module: virt_customize_command
-short_description: Performs commands on guest images
+module: virt_customize_upload
+short_description: Uploads files/directories to guest disk image
 version_added: "2.5.11"
 description:
-    - Performs commands on guest images
+    - Uploads files/directories to guest disk image
+
 options:
     image:
         required: True
