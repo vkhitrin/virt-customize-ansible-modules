@@ -1,6 +1,6 @@
 # virt-customize Ansible Modules
 
-**Note:** This is a POC repo, if you're part of RedHat please contribute to the [desgin sheet](https://docs.google.com/document/d/1ho_iVpoyiGbAX8mtgpfByGtlwvKNQ8bcmd_0-orz45s/)
+**Note:** This is a POC repo
 
 **Note:** Due to it being a POC repo, code isn't optimized.
 
@@ -8,7 +8,7 @@ virt-customize Ansible modules allow users to use Ansible to automate commonly u
 
 ## Prerequisites:
 
-* Ansible >= 2.5.11
+* Ansible >= 2.4.0
 * Python >= 2.7.5
 * [guestfs python bindings](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv) >= 1.36.10
 
@@ -16,7 +16,7 @@ May work on earlier releases, tested on the above
 
 ## Modules:
 
-Located under the library directory and utilizes a helper utility script located in module_utils
+Located under the `ansible/modules/virt_customize` directory and utilizes a helper utility script located in `ansible/module_utils/`.
 
 ### virt_customize_packages:
 
@@ -52,29 +52,23 @@ Downloads files/directories from guest disk image
 
 ## Documentation:
 
-Can be viewed inside each module under the `DOCUMENTATION` variable.
-
-## Examples:
-
-Can be viewed inside each module under the `EXAMPLES` variable.
-
-## Results:
-
-Can be viewed inside each module under the `RETURN` variable.
+Please refer to `README.md` in `examples`.
 
 ## Installation
 
-TO BE IMPLEMENTED IN A PROPER WAY
+**TODO:** Host on PyPI
 
-Make sure ansible installed on the ansible-controller node and guestfs bindings are installed on the target host.
-
-For now, copy `library` and `module_utils` directories to a directory where your playbook resides in.
+```
+git clone https://github.com/VKhitrin/virt-customize-ansible-modules
+cd virt-cusomize-ansible-modules
+pip install .
+```
 
 ## Uninstallation
 
-TO BE IMPLEMENTED IN A PROPER WAY
-
-Delete `library` and `module_utils` directories.
+```
+pip uninstall virt-customize-ansible-modules
+```
 
 ## License
 
