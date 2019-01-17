@@ -22,9 +22,15 @@ setup(
     author='Vadim Khitrin',
     author_email='me@vkhitrin.com',
     url='https://github.com/vkhitrin/virt-customize-ansible-modules',
+    license='GPLv3',
     py_modules=py_files,
     packages=files,
     install_requires = [
         'ansible>=2.4.0',
+    ],
+    classifiers = [
+        'Development Status :: 4 - Beta',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
     ],
 )
