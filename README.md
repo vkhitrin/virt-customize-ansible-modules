@@ -14,8 +14,16 @@ On host with Ansible installed:
 
 On host:
 * gcc
-* libguestfs (and in some scenarios libguestfs-tools)
-* [guestfs python bindings](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv) >= 1.36.10
+* libguestfs
+* libguestfs python bindings:
+    * Method A:  
+    If your distribution's package manager contains 'python-libguestfs', install it (via `yum`, `apt` ...)  
+    To be used in virtualenv, you could supply the parameter `--system-site-packages` when creating a virtualenv  
+    * Method B:
+    [guestfs python bindings in a virtualenv](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv)  
+    **Requires libguestfs-devel to be installed by your package manager**  
+    In order to install via pip download the relevant version from `http://download.libguestfs.org/python/`  
+    Example, `http://download.libguestfs.org/python/guestfs-1.36.10.tar.gz`  
 
 May work on earlier releases, tested on the above
 
