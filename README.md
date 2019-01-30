@@ -50,6 +50,10 @@ Uploads files/directories to guest disk image
 
 Downloads files/directories from guest disk image
 
+### virt_customize_users
+
+Maintaines users on guest disk image
+
 ## Documentation:
 
 Please refer to `README.md` in `examples`.
