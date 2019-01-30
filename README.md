@@ -8,8 +8,13 @@ virt-customize Ansible modules allow users to use Ansible to automate commonly u
 
 ## Prerequisites:
 
+On host with Ansible installed:
 * Ansible >= 2.4.0
 * Python >= 2.7.5
+
+On host:
+* gcc
+* libguestfs (and in some scenarios libguestfs-tools)
 * [guestfs python bindings](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv) >= 1.36.10
 
 May work on earlier releases, tested on the above
