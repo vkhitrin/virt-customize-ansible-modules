@@ -19,7 +19,7 @@ On host:
     * Method A:  
     If your distribution's package manager contains 'python-libguestfs', install it (via `yum`, `apt` ...)  
     To be used in virtualenv, you could supply the parameter `--system-site-packages` when creating a virtualenv  
-    * Method B:
+    * Method B:  
     [guestfs python bindings in a virtualenv](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv)  
     **Requires libguestfs-devel to be installed by your package manager**  
     In order to install via pip download the relevant version from `http://download.libguestfs.org/python/`  

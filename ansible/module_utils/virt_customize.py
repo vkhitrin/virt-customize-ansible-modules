@@ -92,7 +92,10 @@ class guest():
         if self.handle:
             if self.mount:
                 self.handle.umount_all()
+            # Backwards compatability, autosync is enabled by default since libguestfs 1.5.24
             self.handle.sync()
+            # Shut off applicance before closing handle
+            self.handle.shutdown()
             self.handle.close()
             return True
 

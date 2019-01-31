@@ -159,7 +159,7 @@ def main():
             network=dict(required=False, type='bool', default=True),
             name=dict(required=True, type='str'),
             # TODO vkhitrin: state=absent and no password support
-            password=dict(required=True, type='str'),
+            password=dict(required=True, type='str', no_log=True),
             state=dict(required=True, choices=['present', 'absent']),
             debug=dict(required=False, type='bool', default=False),
             force=dict(required=False, type='bool', default=False)
