@@ -176,6 +176,7 @@ def main():
             recursive=dict(required=False, type='bool', default=False),
             automount=dict(required=False, type='bool', default=True),
             network=dict(required=False, type='bool', default=True),
+            selinux_relabel=dict(required=False, type='bool', default=False),
         ),
         supports_check_mode=True
     )

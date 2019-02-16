@@ -157,6 +157,7 @@ def main():
             image=dict(required=True, type='str'),
             automount=dict(required=False, type='bool', default=True),
             network=dict(required=False, type='bool', default=True),
+            selinux_relabel=dict(required=False, type='bool', default=False),
             name=dict(required=True, type='str'),
             # TODO vkhitrin: state=absent and no password support
             password=dict(required=True, type='str', no_log=True),

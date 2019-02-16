@@ -197,6 +197,7 @@ def main():
             image=dict(required=True, type='str'),
             automount=dict(required=False, type='bool', default=True),
             network=dict(required=False, type='bool', default=True),
+            selinux_relabel=dict(required=False, type='bool', default=False),
             command=dict(required=False, type='list'),
             shell=dict(required=False, type='list'),
             debug=dict(required=False, type='bool', default=False),
