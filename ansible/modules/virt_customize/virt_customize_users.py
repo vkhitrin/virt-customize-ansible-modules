@@ -37,6 +37,9 @@ options:
         required: False
         description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
         default: True
+    selinux_relabel:
+        required: False
+        description: Whether to perform SELinux contect relabeling during invocation
     network:
         required: False
         description: Whether to enable network for appliance
@@ -124,7 +127,7 @@ def users(guest, module):
                     results['failed'] = True
                     results['msg'] = str(e)
 
-            else: 
+            else:
                 try:
                     guest.sh_lines('useradd {user}'.format(user=user_name))
                     guest.sh_lines('{u}:{p} | chpasswd'.format(u=user_name,

@@ -24,7 +24,7 @@ options:
         description: image path on filesystem.
     name:
         required: False
-        description: list of packages to manipulate
+        description: list of packages to manipulate, name and list are mutually exclusive
     state:
         required: True
         description: action to be performed
@@ -33,7 +33,7 @@ options:
           - absent
     list:
         required: False
-        description: string to match when querying installed packages, to display all use '*'
+        description: string to match when querying installed packages, to display all use '*', name and list are mutually exclusive
     automount:
         required: False
         description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
@@ -42,6 +42,9 @@ options:
         required: False
         description: Whether to enable network for appliance
         default: True
+    selinux_relabel:
+        required: False
+        description: Whether to perform SELinux contect relabeling during invocation
     debug:
         required: False
         description: When available attempt do display debug info
@@ -95,7 +98,7 @@ EXAMPLES = """
   virt_customize_packages:
     image: /tmp/rhel7-5.qcow2
     list: '*'
-    
+
 - name: Perform installation with debug
   virt_customize_packages:
     image: /tmp/rhel7-5.qcow2
@@ -229,7 +232,7 @@ def packages(guest, module):
                             if not re.match(app_regex, app['app2_name']):
                                 del packages_list[-1]
                     break
-            
+
             if packages_list:
                 results['results'] = packages_list
             else:

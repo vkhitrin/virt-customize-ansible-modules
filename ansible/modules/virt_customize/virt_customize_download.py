@@ -23,16 +23,16 @@ options:
         description: image path on filesystem.
     src:
         required: True
-        description: source file path on filesystem.
+        description: source file path on guest disk image.
     dest:
         required: True
-        description: dest file path on guest diks image.
+        description: dest file path on host
     remote_src:
         required: True
         description: perform copy of source file from remote host instead on ansible host.
     recursive:
-        required: True
-        description: copies directories to a directory on guest disk image.
+        required: False
+        description: copies nested directories to a directory on guest disk image.
     automount:
         required: False
         description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
@@ -41,6 +41,9 @@ options:
         required: False
         description: Whether to enable network for appliance
         default: True
+    selinux_relabel:
+        required: False
+        description: Whether to perform SELinux contect relabeling during invocation
 
 ---
 requirements:
@@ -139,7 +142,7 @@ def download(guest, module):
                'src': module.params['src'],
                'dest': module.params['dest']
            }
-            
+
            if md5sum_src and md5sum_dest:
                results['md5'] = md5sum_src 
 

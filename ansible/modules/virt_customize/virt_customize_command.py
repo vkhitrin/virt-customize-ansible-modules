@@ -23,10 +23,10 @@ options:
         description: image path on filesystem.
     shell:
         required: False
-        description: List of commands to run in shell (commands are invoked from /usr/bin/sh)
+        description: List of commands to run in shell (commands are invoked from /usr/bin/sh), shell and command are mutually exclusive
     command:
         required: False
-        description: List of commands to run directly from binaries
+        description: List of commands to run directly from binaries, shell and command are mutually exclusive
     force:
         required: False
         description: Perform all commands even if there is failures
@@ -38,6 +38,9 @@ options:
         required: False
         description: Whether to enable network for appliance
         default: True
+    selinux_relabel:
+        required: False
+        description: Whether to perform SELinux contect relabeling during invocation
     debug:
         required: False
         description: When available attempt do display debug info
@@ -132,7 +135,7 @@ RETURN = """
             "lrwxrwxrwx  1 root root    30 Dec  3 09:39 vmlinuz -> boot/vmlinuz-4.18.0-12-generic",
             "lrwxrwxrwx  1 root root    30 Dec  3 09:39 vmlinuz.old -> boot/vmlinuz-4.18.0-12-generic"
         ]
-    } 
+    }
 
 """
 
@@ -172,7 +175,7 @@ def execute(guest, module):
                 err = True
                 results['failed'] = True
                 result = results['msg'] = str(e)
-                
+
             results['results'].append(cmd)
 
             if module.params['debug'] and not err:

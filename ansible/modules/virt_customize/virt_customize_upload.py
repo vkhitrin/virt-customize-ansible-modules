@@ -32,12 +32,15 @@ options:
         required: True
         description: perform copy of source file from remote host instead on ansible host.
     recursive:
-        required: True
-        description: copies directories to a directory on guest disk image.
+        required: False
+        description: copies nested directories to a directory on guest disk image.
     automount:
         required: False
         description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
         default: True
+    selinux_relabel:
+        required: False
+        description: Whether to perform SELinux contect relabeling during invocation
     network:
         required: False
         description: Whether to enable network for appliance
@@ -154,7 +157,7 @@ def upload(guest, module):
                     'src': module.params['src'],
                     'dest': module.params['dest']
                 }
-                 
+
                 if md5sum_src and md5sum_dest:
                     results['md5'] = md5sum_src 
 
