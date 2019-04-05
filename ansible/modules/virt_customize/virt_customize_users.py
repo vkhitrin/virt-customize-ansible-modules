@@ -49,6 +49,7 @@ options:
 requirements:
     - "guestfs"
     - "python >= 2.7.5"
+    - "python >= 3.7"
 author: Vadim Khitrin (@vkhitrin)
 
 """
@@ -120,8 +121,8 @@ def users(guest, module):
         if state == 'present':
             if user_exists:
                 try:
-                    guest.sh_lines('{u}:{p} | chpasswd'.format(u=user_name,
-                                                               p=user_password))
+                    guest.sh_lines('echo {u}:{p} | chpasswd'.format(u=user_name,
+                                                                    p=user_password))
                 except Exception as e:
                     err = True
                     results['failed'] = True
@@ -162,8 +163,7 @@ def main():
             network=dict(required=False, type='bool', default=True),
             selinux_relabel=dict(required=False, type='bool', default=False),
             name=dict(required=True, type='str'),
-            # TODO vkhitrin: state=absent and no password support
-            password=dict(required=True, type='str', no_log=True),
+            password=dict(type='str', no_log=True),
             state=dict(required=True, choices=['present', 'absent']),
             debug=dict(required=False, type='bool', default=False),
             force=dict(required=False, type='bool', default=False)
@@ -171,6 +171,13 @@ def main():
         required_together=required_togheter_args,
         supports_check_mode=True
     )
+
+    if not module.params['password'] and module.params['state'] == 'present':
+        err = True
+        results = {
+            'msg': 'Please provide password when using present state'
+        }
+        module.fail_json(**results)
 
     g = guest(module)
     instance = g.bootstrap()

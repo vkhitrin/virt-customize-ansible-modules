@@ -102,7 +102,7 @@ class guest():
                             selinux_policy_string = re.search(re_policy, selinux_policy_line[0])
                             selinux_policy = selinux_policy_string.group('policy')
                             selinux_spec_file = "/etc/selinux/{}/contexts/files/file_contexts".format(selinux_policy)
-                            if self.handle.exists(selinux_spec_file) == 1L:
+                            if self.handle.exists(selinux_spec_file) == 1:
                                 self.handle.selinux_relabel(selinux_spec_file, "/", force=True)
                     else:
                         self.handle.touch("/.autorelabel")
