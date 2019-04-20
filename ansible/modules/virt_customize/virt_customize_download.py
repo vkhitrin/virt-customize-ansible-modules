@@ -11,50 +11,52 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-DOCUMENTATION = """
+DOCUMENTATION = '''
+---
 module: virt_customize_download
-short_description: Downloads files/directories from guest disk image
-version_added: "2.5.11"
+short_description: Fetch files from guest image
 description:
-    - Downloads files/directories from guest disk image
+    - Fetch files from guest image
 options:
-    image:
-        required: True
-        description: image path on filesystem.
-    src:
-        required: True
-        description: source file path on guest disk image.
-    dest:
-        required: True
-        description: dest file path on host
-    remote_src:
-        required: True
-        description: perform copy of source file from remote host instead on ansible host.
-    recursive:
-        required: False
-        description: copies nested directories to a directory on guest disk image.
-    automount:
-        required: False
-        description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
-        default: True
-    network:
-        required: False
-        description: Whether to enable network for appliance
-        default: True
-    selinux_relabel:
-        required: False
-        description: Whether to perform SELinux contect relabeling during invocation
-
----
+  image:
+    required: True
+    description: Image path on filesystem
+  src:
+    required: True
+    description: Source file path on guest image
+  dest:
+    required: True
+    description: Destination file path on filesystem
+  remote_src:
+    required: True
+    description: Download files from guest image to Ansible controller host instead of Ansible host
+  recursive:
+    required: False
+    description: Copies nested directories from a directory on guest disk image
+    default: False
+  automount:
+    required: False
+    description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
+    default: True
+  network:
+    required: False
+    description: Whether to enable network for appliance
+    default: True
+  selinux_relabel:
+    required: False
+    description: Whether to perform SELinux context relabeling
+    default: False
+notes:
+  - Currently remote_src option is not implemented
 requirements:
-    - "guestfs"
-    - "python >= 2.7.5"
-author: Vadim Khitrin (@vkhitrin)
+- "libguestfs"
+- "libguestfs-devel"
+- "python >= 2.7.5 || python >= 3.4"
+author:
+    - Vadim Khitrin (@vkhitrin)
+'''
 
-"""
-
-EXAMPLES = """
----
+EXAMPLES = '''
 - name: Download a file from guest disk image
   virt_customize_download:
     image: /tmp/rhel7-5.qcow2
@@ -73,9 +75,9 @@ EXAMPLES = """
     src: '/tmp/logs/'
     dest: '/tmp/'
     recursive: True
-"""
+'''
 
-RETURN = """
+RETURN = '''
 - msg:
     type: string
     when: failure
@@ -96,8 +98,7 @@ RETURN = """
     when: success upload file
     description: displays md5 checksum of file
     "debug": "d6fe77f000341b5f9a952e744f34901a"
-
-"""
+'''
 
 from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule

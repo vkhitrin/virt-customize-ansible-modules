@@ -11,51 +11,49 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-DOCUMENTATION = """
+DOCUMENTATION = '''
 module: virt_customize_upload
-short_description: Uploads files/directories to guest disk image
-version_added: "2.5.11"
+short_description: Uploads files to guest image
 description:
-    - Uploads files/directories to guest disk image
-
+    - Uploads files to guest image
 options:
-    image:
-        required: True
-        description: image path on filesystem.
-    src:
-        required: True
-        description: source file path on filesystem.
-    dest:
-        required: True
-        description: dest file path on guest diks image.
-    remote_src:
-        required: True
-        description: perform copy of source file from remote host instead on ansible host.
-    recursive:
-        required: False
-        description: copies nested directories to a directory on guest disk image.
-    automount:
-        required: False
-        description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
-        default: True
-    selinux_relabel:
-        required: False
-        description: Whether to perform SELinux contect relabeling during invocation
-    network:
-        required: False
-        description: Whether to enable network for appliance
-        default: True
-
----
+  image:
+    required: True
+    description: Image path on filesystem
+  src:
+    required: True
+    description: Source file path on filesystem
+  dest:
+    required: True
+    description: Destination file path in guest image
+  remote_src:
+    required: True
+    description: Upload files to guest image from Ansible controller host instead of Ansible host
+  recursive:
+    required: False
+    description: Copies nested directories from a directory on guest disk image
+  automount:
+    required: False
+    description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
+    default: True
+  selinux_relabel:
+    required: False
+    description: Whether to perform SELinux context relabeling
+  network:
+    required: False
+    description: Whether to enable network for appliance
+    default: True
+notes:
+  - Currently remote_src option is not implemented
 requirements:
-    - "guestfs"
-    - "python >= 2.7.5"
-author: Vadim Khitrin (@vkhitrin)
+- "libguestfs"
+- "libguestfs-devel"
+- "python >= 2.7.5 || python >= 3.4"
+author:
+    - Vadim Khitrin (@vkhitrin)
+'''
 
-"""
-
-EXAMPLES = """
----
+EXAMPLES = '''
 - name: Upload a file to a directory in guest disk image
   virt_customize_upload:
     image: /tmp/rhel7-5.qcow2
@@ -74,9 +72,9 @@ EXAMPLES = """
     src: '/tmp/logs/'
     dest: '/tmp/'
     recursive: True
-"""
+'''
 
-RETURN = """
+RETURN = '''
 - msg:
     type: string
     when: failure
@@ -97,8 +95,7 @@ RETURN = """
     when: success upload file
     description: displays md5 checksum of file
     "debug": "d6fe77f000341b5f9a952e744f34901a"
-
-"""
+'''
 
 from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule

@@ -11,51 +11,51 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-DOCUMENTATION = """
+DOCUMENTATION = '''
+---
 module: virt_customize_command
-short_description: Performs commands on guest images
-version_added: "2.5.11"
+short_description: Execute commands on guest image
 description:
-    - Performs commands on guest images
+    - Execute commands on guest images
 options:
-    image:
-        required: True
-        description: image path on filesystem.
-    shell:
-        required: False
-        description: List of commands to run in shell (commands are invoked from /usr/bin/sh), shell and command are mutually exclusive
-    command:
-        required: False
-        description: List of commands to run directly from binaries, shell and command are mutually exclusive
-    force:
-        required: False
-        description: Perform all commands even if there is failures
-    automount:
-        required: False
-        description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
-        default: True
-    network:
-        required: False
-        description: Whether to enable network for appliance
-        default: True
-    selinux_relabel:
-        required: False
-        description: Whether to perform SELinux contect relabeling during invocation
-    debug:
-        required: False
-        description: When available attempt do display debug info
-        default: False
-
----
+  image:
+    required: True
+    description: Image path on filesystem
+  shell:
+    required: False
+    description: List of commands to run in shell (commands are invoked from /usr/bin/sh), shell and command are mutually exclusive
+  command:
+    required: False
+    description: List of commands to run directly from binaries, shell and command are mutually exclusive
+  force:
+    required: False
+    description: Perform all commands even if there are failures
+    default: False
+  automount:
+    required: False
+    description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
+    default: True
+  network:
+    required: False
+    description: Whether to enable network for appliance
+    default: True
+  selinux_relabel:
+    required: False
+    description: Whether to perform SELinux context relabeling
+    default: False
+  debug:
+    required: False
+    description: Log command output
+    default: False 
 requirements:
-    - "guestfs"
-    - "python >= 2.7.5"
-author: Vadim Khitrin (@vkhitrin)
+- "libguestfs"
+- "libguestfs-devel"
+- "python >= 2.7.5 || python >= 3.4"
+author:
+    - Vadim Khitrin (@vkhitrin)
+'''
 
-"""
-
-EXAMPLES = """
----
+EXAMPLES = '''
 - name: Executes a shell command
   virt_customize_command:
     image: /tmp/rhel7-5.qcow2
@@ -83,10 +83,9 @@ EXAMPLES = """
       - 'ls -lra'
       - 'ip a'
     debug: True
+'''
 
-"""
-
-RETURN = """
+RETURN = '''
 - msg:
     type: string
     when: failure
@@ -136,8 +135,7 @@ RETURN = """
             "lrwxrwxrwx  1 root root    30 Dec  3 09:39 vmlinuz.old -> boot/vmlinuz-4.18.0-12-generic"
         ]
     }
-
-"""
+'''
 
 from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule

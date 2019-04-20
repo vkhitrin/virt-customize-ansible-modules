@@ -11,54 +11,55 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-DOCUMENTATION = """
+DOCUMENTATION = '''
 ---
 module: virt_customize_packages
-short_description: Performs package installation on guest disk images
-version_added: "2.5.11"
+short_description: Manage packages on guest image
 description:
-    - Manipulates packages on guest disk image using libguestfs
+    - Manage packages on guest image
 options:
-    image:
-        required: True
-        description: image path on filesystem.
-    name:
-        required: False
-        description: list of packages to manipulate, name and list are mutually exclusive
-    state:
-        required: True
-        description: action to be performed
-        choices:
-          - present
-          - absent
-    list:
-        required: False
-        description: string to match when querying installed packages, to display all use '*', name and list are mutually exclusive
-    automount:
-        required: False
-        description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
-        default: True
-    network:
-        required: False
-        description: Whether to enable network for appliance
-        default: True
-    selinux_relabel:
-        required: False
-        description: Whether to perform SELinux contect relabeling during invocation
-    debug:
-        required: False
-        description: When available attempt do display debug info
-        default: False
-
+  image:
+    required: True
+    description: Image path on filesystem
+  name:
+    required: False
+    description: List of packages to manipulate, name and list are mutually exclusive
+  state:
+    required: True
+    description: action to be performed
+    choices:
+    - present
+    - absent
+  list:
+    required: False
+    description: String to match when querying installed packages, to display all insert '*', name and list are mutually exclusive
+  automount:
+    required: False
+    description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
+    default: True
+  network:
+    required: False
+    description: Whether to enable network for appliance
+    default: True
+  selinux_relabel:
+    required: False
+    description: Whether to perform SELinux context relabeling
+    default: False
+  debug:
+    required: False
+    description: Log package manager command output
+    default: False
+notes:
+  - Currently only guest images with dnf,yum and apt package managers are supported
 requirements:
-    - "guestfs"
-    - "python >= 2.7.5"
-author: Vadim Khitrin (@vkhitrin)
+- "libguestfs"
+- "libguestfs-devel"
+- "python >= 2.7.5 || python >= 3.4"
+author:
+    - Vadim Khitrin (@vkhitrin)
+'''
 
-"""
-
-EXAMPLES = """
----
+EXAMPLES = '''
 - name: Installs a single package
   virt_customize_packages:
     image: /tmp/rhel7-5.qcow2
@@ -105,9 +106,9 @@ EXAMPLES = """
     name: vim
     state: present
     debug: True
-"""
+'''
 
-RETURN = """
+RETURN = '''
 - msg:
     type: string
     when: failure
@@ -130,7 +131,7 @@ RETURN = """
         "Loaded plugins: search-disabled-repos",
         "No Packages marked for removal" 
     ]
-"""
+'''
 
 from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule

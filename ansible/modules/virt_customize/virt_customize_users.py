@@ -11,51 +11,47 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-DOCUMENTATION = """
+DOCUMENTATION = '''
 module: virt_customize_users
-short_description: Manages users in guest images
-version_added: "2.4"
+short_description: Manages users in guest image
 description:
-    - Manages users in guest images
+    - Manages users in guest image
 options:
-    image:
-        required: True
-        description: image path on filesystem.
-    name:
-        required: True
-        description: name of user
-    password:
-        required: False
-        description: user's password
-    state:
-        required: True
-        description: action to be performed
-        choices:
-          - present
-          - absent
-    automount:
-        required: False
-        description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
-        default: True
-    selinux_relabel:
-        required: False
-        description: Whether to perform SELinux contect relabeling during invocation
-    network:
-        required: False
-        description: Whether to enable network for appliance
-        default: True
-
----
+  image:
+    required: True
+    description: Image path on filesystem
+  name:
+    required: True
+    description: Name of user to manage
+  password:
+    required: False
+    description: User's password
+  state:
+    required: True
+    description: Action to be performed
+    choices:
+    - present
+    - absent
+  automount:
+    required: False
+    description: Whether to perform auto mount of mountpoints inside guest disk image (REQUIRED for this module)
+    default: True
+  selinux_relabel:
+    required: False
+    description: Whether to perform SELinux context relabeling
+  network:
+    required: False
+    description: Whether to enable network for appliance
+    default: True
 requirements:
-    - "guestfs"
-    - "python >= 2.7.5"
-    - "python >= 3.7"
-author: Vadim Khitrin (@vkhitrin)
+- "libguestfs"
+- "libguestfs-devel"
+- "python >= 2.7.5 || python >= 3.4"
+author:
+    - Vadim Khitrin (@vkhitrin)
+'''
 
-"""
-
-EXAMPLES = """
----
+EXAMPLES = '''
 - name: Creates a user
   virt_customize_users:
     image: /tmp/rhel7-5.qcow2
@@ -76,9 +72,9 @@ EXAMPLES = """
     user: root
     password: root_password
     state: absent
-"""
+'''
 
-RETURN = """
+RETURN = '''
 - msg:
     type: string
     when: failure
@@ -92,7 +88,7 @@ RETURN = """
     example: [
         "test_user is present"
     ]
-"""
+'''
 
 from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule

@@ -4,13 +4,13 @@
 
 Full documentation(ansible-doc) is present inside the module.
 
-| Module                   | Description                | Documentation                                                             |
-|:------------------------:|:--------------------------:|:-------------------------------------------------------------------------:|
-| virt_customize_command   | Execute commands           | [doc](/ansible/modules/virt_customize/virt_customize_command.py#L14-L47)  |
-| virt_customize_pakacges  | Manage packages            | [doc](/ansible/modules/virt_customize/virt_customize_packages.py#L14-L51) |
-| virt_customize_users     | Manage users               | [doc](/ansible/modules/virt_customize/virt_customize_users.py#L14-L46)    |
-| virt_customize_download  | Fetch files                | [doc](/ansible/modules/virt_customize/virt_customize_download.py#L14-L46) |
-| virt_customize_upload    | Upload files               | [doc](/ansible/modules/virt_customize/virt_customize_upload.py#L14-L47)   |
+| Module                   | Description                | Documentation                                                                |
+|:------------------------:|:--------------------------:|:----------------------------------------------------------------------------:|
+| virt_customize_command   | Execute commands           | [doc](/ansible/modules/virt_customize/virt_customize_command.py#L14-L138)    |
+| virt_customize_pakacges  | Manage packages            | [doc](/ansible/modules/virt_customize/virt_customize_packages.py#L14-L134)   |
+| virt_customize_users     | Manage users               | [doc](/ansible/modules/virt_customize/virt_customize_users.py#L14-L91)       |
+| virt_customize_download  | Fetch files                | [doc](/ansible/modules/virt_customize/virt_customize_download.py#L14-L101)   |
+| virt_customize_upload    | Upload files               | [doc](/ansible/modules/virt_customize/virt_customize_upload.py#L14-L98)      |
 
 ## Sample Play
 
