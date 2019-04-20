@@ -5,7 +5,7 @@
 Full documentation(ansible-doc) is present inside the module.
 
 | Module                   | Description                | Documentation                                                             |
-|--------------------------|----------------------------|---------------------------------------------------------------------------|
+|:------------------------:|:--------------------------:|:-------------------------------------------------------------------------:|
 | virt_customize_command   | Execute commands           | [doc](/ansible/modules/virt_customize/virt_customize_command.py#L14-L47)  |
 | virt_customize_pakacges  | Manage packages            | [doc](/ansible/modules/virt_customize/virt_customize_packages.py#L14-L51) |
 | virt_customize_users     | Manage users               | [doc](/ansible/modules/virt_customize/virt_customize_users.py#L14-L46)    |
@@ -14,7 +14,7 @@ Full documentation(ansible-doc) is present inside the module.
 
 ## Sample Play
 
-Assumes you have everything installed (mentioned in [repo's README](/README.md)).
+Assumes you have everything installed (mentioned in [repo's README Prerequisites](/README.md#Prerequisites)).
 
 ### Install package on image located on localhost:
 

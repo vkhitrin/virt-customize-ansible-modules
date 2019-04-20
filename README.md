@@ -28,11 +28,11 @@ On Ansible Host:
 
 ## Compatability Matrix
 :heavy_check_mark: - Fully Supported and tested  
-:heavy_exclamation_mark: - Supported and not tested or Half supported  
+:heavy_exclamation_mark: - Supported and not tested or partial support  
 :x: - Not supported
 
 | Distro             | Supported                | Notes           |
-|--------------------|--------------------------|-----------------|
+|:------------------:|:------------------------:|:---------------:|
 | Fedora/CentOS/RHEL | :heavy_check_mark:       |                 |
 | Ubuntu             | :heavy_check_mark:       |                 |
 | Debian             | :heavy_exclamation_mark: | Not tested      |
@@ -40,7 +40,7 @@ On Ansible Host:
 
 ## Documentation
 
-Please refer to [repo's documentation](/docs/README.md) for more infromation
+Please refer to [repo's documentation](/docs) for more infromation
 
 ## Installation
 
