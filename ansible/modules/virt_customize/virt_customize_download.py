@@ -27,9 +27,6 @@ options:
   dest:
     required: True
     description: Destination file path on filesystem
-  remote_src:
-    required: True
-    description: Download files from guest image to Ansible controller host instead of Ansible host
   recursive:
     required: False
     description: Copies nested directories from a directory on guest disk image
@@ -47,7 +44,7 @@ options:
     description: Whether to perform SELinux context relabeling
     default: False
 notes:
-  - Currently remote_src option is not implemented
+  - If your Ansible host is not your Ansible Controller host, use the module 'fetch' or 'synchronize' to retrieve remote files
 requirements:
 - "libguestfs"
 - "libguestfs-devel"
@@ -84,20 +81,23 @@ RETURN = '''
     description: Contains the error message (may include python exceptions)
     example: "read: /tmp/aaaa: Is a directory'
 
-- results:
-    type: dictionary
-    when: success
-    description: Contains the module successful execution results
-    example: {
-        "dest": "/tmp/RESULT_ANS.log",
-        "src": "/tmp/RESULT_ANS.log"
-    }
+- src:
+    type: string
+    when: always
+    description: source path of file(s) to download on guest image
+    example: "/tmp/RESULT_ANS.log"
+
+- dest:
+    type: string
+    when: always
+    description: dest path of file(s) to download to host
+    example: "/tmp/RESULT_ANS.log"
 
 - md5:
     type: string
-    when: success upload file
-    description: displays md5 checksum of file
-    "debug": "d6fe77f000341b5f9a952e744f34901a"
+    when: successful download of a single file
+    description: displays md5 checksum of single file
+    "example": "d6fe77f000341b5f9a952e744f34901a"
 '''
 
 from ansible.module_utils.virt_customize import guest
@@ -110,42 +110,45 @@ def download(guest, module):
     err = False
     results = {
         'changed': False,
-        'failed': False
+        'failed': False,
+        'src': module.params['src'],
     }
-    md5sum_src = md5sum_dest = None
+    md5sum_src = None
+    md5sum_dest = None
+    src = module.params['src']
+    dest = module.params['dest']
 
     if module.params['automount']:
-       try:
-           if module.params['recursive']:
-               guest.copy_out(module.params['src'], module.params['dest'])
-               if not module.params['src'].endswith(os.path.sep):
-                   module.params['dest'] = module.params['dest'] + os.path.basename(module.params['src'])
-           else:
-               if module.params['dest'].endswith(os.path.sep):
-                   module.params['dest'] = module.params['dest'] + os.path.basename(module.params['src'])
-               guest.download(module.params['src'], module.params['dest'])
-       except Exception as e:
-           err = True
-           results['failed'] = True
-           results['msg'] = str(e)
+        try:
+            # Check if source path is a file and not a directory/symlink
+            if not guest.is_file(src) and not module.params['recursive']:
+                err = True
+                results['msg'] = "Source file is either directory or symlink, if it's a directory use 'recursive' argument"
+            else:
+                if module.params['recursive']:
+                    if not src.endswith(os.path.sep):
+                        dest = dest + os.path.basename(src)
+                    guest.copy_out(src, dest)
+                else:
+                    md5sum_src = guest.checksum("md5", src)
+                    if dest.endswith(os.path.sep):
+                        dest = dest + os.path.basename(src)
+                    # Check if destination file exists on host
+                    if os.path.isfile(dest):
+                        md5sum_dest = module.md5(dest)
+                    # If md5sum of source file and dest file are different, download file from guest
+                    if md5sum_src != md5sum_dest:
+                        results['changed'] = True
+                        guest.download(src, dest)
 
-       if md5sum_src:
-           md5sum_dest = guest.checksum("md5", module.params['dest'])
+        except Exception as e:
+            err = True
+            results['failed'] = True
+            results['msg'] = str(e)
 
-       if md5sum_src != md5sum_dest:
-           err = True
-           results['failed'] = True
-           results['msg'] = 'Uploaded file does not match source file md5 checksum'
-
-       if not err:
-           results['changed'] = True
-           results['result'] = {
-               'src': module.params['src'],
-               'dest': module.params['dest']
-           }
-
-           if md5sum_src and md5sum_dest:
-               results['md5'] = md5sum_src 
+        if not err:
+            results['md5sum'] = md5sum_src
+            results['dest'] = dest
 
     else:
         err = True
@@ -161,7 +164,6 @@ def main():
             image=dict(required=True, type='str'),
             src=dict(required=True, type='path'),
             dest=dict(required=True, type='path'),
-            remote_src=dict(required=False, type='bool', default=False),
             recursive=dict(required=False, type='bool', default=False),
             automount=dict(required=False, type='bool', default=True),
             network=dict(required=False, type='bool', default=True),
