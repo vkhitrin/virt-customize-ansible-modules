@@ -129,7 +129,7 @@ RETURN = '''
     description: displays debug info
     example: [
         "Loaded plugins: search-disabled-repos",
-        "No Packages marked for removal" 
+        "No Packages marked for removal"
     ]
 '''
 
@@ -270,7 +270,7 @@ def main():
         mutually_exclusive=mutual_exclusive_args,
         required_one_of=required_one_of_args,
         required_together=required_togheter_args,
-        supports_check_mode=True
+        supports_check_mode=False
     )
 
     g = guest(module)

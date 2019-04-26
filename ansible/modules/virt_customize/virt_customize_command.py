@@ -46,7 +46,7 @@ options:
   debug:
     required: False
     description: Log command output
-    default: False 
+    default: False
 requirements:
 - "libguestfs"
 - "libguestfs-devel"
@@ -206,7 +206,7 @@ def main():
         ),
         mutually_exclusive=mutual_exclusive_args,
         required_one_of=required_one_of_args,
-        supports_check_mode=True
+        supports_check_mode=False
     )
 
     g = guest(module)

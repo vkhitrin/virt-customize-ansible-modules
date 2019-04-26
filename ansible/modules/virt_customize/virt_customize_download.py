@@ -169,7 +169,7 @@ def main():
             network=dict(required=False, type='bool', default=True),
             selinux_relabel=dict(required=False, type='bool', default=False),
         ),
-        supports_check_mode=True
+        supports_check_mode=False
     )
 
     g = guest(module)

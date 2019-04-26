@@ -165,7 +165,7 @@ def main():
             force=dict(required=False, type='bool', default=False)
         ),
         required_together=required_togheter_args,
-        supports_check_mode=True
+        supports_check_mode=False
     )
 
     if not module.params['password'] and module.params['state'] == 'present':

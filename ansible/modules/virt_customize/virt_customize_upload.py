@@ -156,7 +156,7 @@ def upload(guest, module):
                 }
 
                 if md5sum_src and md5sum_dest:
-                    results['md5'] = md5sum_src 
+                    results['md5'] = md5sum_src
 
     else:
         err = True
@@ -178,7 +178,7 @@ def main():
             network=dict(required=False, type='bool', default=True),
             selinux_relabel=dict(required=False, type='bool', default=False),
         ),
-        supports_check_mode=True
+        supports_check_mode=False
     )
 
     g = guest(module)
