@@ -13,7 +13,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
 
 DOCUMENTATION = '''
 ---
-module: virt_customize_packages
+module: virt_customize_package
 short_description: Manage packages on guest image
 description:
     - Manage packages on guest image
@@ -57,13 +57,13 @@ author:
 
 EXAMPLES = '''
 - name: Installs a single package
-  virt_customize_packages:
+  virt_customize_package:
     image: /tmp/rhel7-5.qcow2
     name: vim
     state: present
 
 - name: Installs several packages
-  virt_customize_packages:
+  virt_customize_package:
     image: /tmp/rhel7-5.qcow2
     name:
       - vim
@@ -72,13 +72,13 @@ EXAMPLES = '''
     state: present
 
 - name: Uninstalls a single package
-  virt_customize_packages:
+  virt_customize_package:
     image: /tmp/rhel7-5.qcow2
     name: vim
     state: absent
 
 - name: Uninstalls several package
-  virt_customize_packages:
+  virt_customize_package:
     image: /tmp/rhel7-5.qcow2
     name:
       - vim
@@ -87,12 +87,12 @@ EXAMPLES = '''
     state: absent
 
 - name: List all packages containing string 'yum'
-  virt_customize_packages:
+  virt_customize_package:
     image: /tmp/rhel7-5.qcow2
     list: yum
 
 - name: List all packages
-  virt_customize_packages:
+  virt_customize_package:
     image: /tmp/rhel7-5.qcow2
     list: '*'
 '''
@@ -163,9 +163,8 @@ def packages(guest, module):
                     results['failed'] = True
                     results['msg'] = str(e)
 
-                results['log'] = '\n'.join(result)
-
                 if package_manager in ['yum', 'dnf'] and not err:
+                    results['log'] = '\n'.join(result)
                     for line in result:
                         for package in module.params['name']:
                             if package in line:

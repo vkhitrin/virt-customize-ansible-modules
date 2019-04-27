@@ -1,7 +1,7 @@
 - hosts: localhost
   become: yes
   tasks:
-    - virt_customize_packages:
+    - virt_customize_package:
         image: '/tmp/CentOS-7-x86_64-GenericCloud-1809.qcow2'
         name: vim
         state: present
