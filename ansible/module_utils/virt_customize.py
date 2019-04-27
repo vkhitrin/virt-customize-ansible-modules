@@ -37,7 +37,6 @@ class guest():
         self.network = False
         self.image = None
         self.se_relabel = False
-        self.debug = False
 
     def bootstrap(self):
 
@@ -46,7 +45,6 @@ class guest():
         self.image = ansible_module_params.get('image')
         self.automount = ansible_module_params.get('automount')
         self.network = ansible_module_params.get('network')
-        self.debug = ansible_module_params.get('debug')
         if os.path.exists(self.image) is False:
             results['msg'] = 'Could not find image'
             self.module.fail_json(**results)
@@ -60,15 +58,13 @@ class guest():
         try:
             g.launch()
         except Exception as e:
-            results['msg'] = 'Could not mount guest disk image' 
-            if self.debug:
-                results['debug'] = str(e)
+            results['msg'] = 'Could not mount guest disk image, python exception:{exception}'.format(str(e))
             self.module.fail_json(**results)
 
         if self.automount:
             roots = g.inspect_os()
             if len(roots) == 0:
-                results['msg'] = "No devices were found in guest disk image"
+                results['msg'] = 'No devices were found in guest disk image, python exception:{exception}'.format(str(e))
                 self.module.fail_json(**results)
             for root in roots:
                 mps = g.inspect_get_mountpoints(root)
@@ -76,9 +72,7 @@ class guest():
                     try:
                         g.mount(mps[device], device)
                     except RuntimeError as e:
-                        results['msg'] = "Couldn't mount device inside guest disk image"
-                        if self.debug:
-                            results['debug'] = str(e)
+                        results['msg'] = "Couldn't mount device inside guest disk image, python exception:{exception}".format(str(e))
                         self.module.fail_json(**results)
                 self.mount = True
 
