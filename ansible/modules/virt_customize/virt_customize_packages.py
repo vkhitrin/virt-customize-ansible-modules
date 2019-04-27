@@ -45,10 +45,6 @@ options:
     required: False
     description: Whether to perform SELinux context relabeling
     default: False
-  debug:
-    required: False
-    description: Log package manager command output
-    default: False
 notes:
   - Currently only guest images with dnf,yum and apt package managers are supported
 requirements:
@@ -99,13 +95,6 @@ EXAMPLES = '''
   virt_customize_packages:
     image: /tmp/rhel7-5.qcow2
     list: '*'
-
-- name: Perform installation with debug
-  virt_customize_packages:
-    image: /tmp/rhel7-5.qcow2
-    name: vim
-    state: present
-    debug: True
 '''
 
 RETURN = '''
@@ -123,7 +112,7 @@ RETURN = '''
         "2:vim-enhanced-7.4.160-4.el7.x86_64 is present"
     ]
 
-- debug:
+- log:
     type: array
     when: available and invoked
     description: displays debug info
@@ -174,8 +163,7 @@ def packages(guest, module):
                     results['failed'] = True
                     results['msg'] = str(e)
 
-                if module.params['debug'] and not err:
-                    results['debug'] = result
+                results['log'] = '\n'.join(result)
 
                 if package_manager in ['yum', 'dnf'] and not err:
                     for line in result:
@@ -265,7 +253,6 @@ def main():
             name=dict(required=False, type='list'),
             state=dict(required=False, choices=['present', 'absent']),
             list=dict(required=False, type='str'),
-            debug=dict(required=False, type='bool', default=False)
         ),
         mutually_exclusive=mutual_exclusive_args,
         required_one_of=required_one_of_args,
