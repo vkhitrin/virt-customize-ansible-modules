@@ -26,9 +26,6 @@ options:
   dest:
     required: True
     description: Destination file path in guest image
-  remote_src:
-    required: True
-    description: Upload files to guest image from Ansible controller host instead of Ansible host
   recursive:
     required: False
     description: Copies nested directories from a directory on guest disk image
@@ -44,7 +41,7 @@ options:
     description: Whether to enable network for appliance
     default: True
 notes:
-  - Currently remote_src option is not implemented
+  - If your Ansible host is not your Ansible Controller host, use the module 'copy' to copy files to Ansible Host
 requirements:
 - "libguestfs"
 - "libguestfs-devel"
@@ -81,14 +78,17 @@ RETURN = '''
     description: Contains the error message (may include python exceptions)
     example: "read: /tmp/aaaa: Is a directory'
 
-- results:
-    type: dictionary
-    when: success
-    description: Contains the module successful execution results
-    example: {
-        "dest": "/tmp/RESULT_ANS.log",
-        "src": "/tmp/RESULT_ANS.log"
-    }
+- src:
+    type: string
+    when: always
+    description: source path of file(s) on host
+    example: "/tmp/RESULT_ANS.log"
+
+- dest:
+    type: string
+    when: always
+    description: dest path of file(s) on guest image
+    example: "/tmp/RESULT_ANS.log"
 
 - md5:
     type: string
@@ -101,6 +101,7 @@ from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule
 
 import os
+import shutil
 
 def upload(guest, module):
 
@@ -109,51 +110,64 @@ def upload(guest, module):
         'changed': False,
         'failed': False
     }
-    md5sum_src = md5sum_dest = None
+    md5sum_src = None
+    md5sum_dest = None
+    src = module.params['src']
+    dest = module.params['dest']
 
-    if not os.path.exists(module.params['src']) and not err:
+    if not os.path.exists(src):
         err = True
         results['failed'] = True
-        results['msg'] = 'Source file {file} not found'.format(file=module.params['src'])
+        results['msg'] = 'Source path {path} not found'.format(path=src)
 
-    if not os.access(module.params['src'], os.R_OK) and not err:
+    elif not os.access(src, os.R_OK):
         err = True
         results['failed'] = True
-        results['msg'] = 'Source file {file} not accessable'.format(file=module.params['src'])
-
-    if os.path.isfile(module.params['src']):
-        md5sum_src = module.md5(module.params['src'])
+        results['msg'] = 'Source path {path} not accessable'.format(path=src)
 
     if module.params['automount']:
         if not err:
             try:
-                if module.params['recursive']:
-                    guest.copy_in(module.params['src'], module.params['dest'])
-                    if not module.params['src'].endswith(os.path.sep):
-                        module.params['dest'] = module.params['dest'] + os.path.basename(module.params['src'])
+                # Check if source path is a file and not a directory/symlink
+                if not os.path.isfile(src) and not module.params['recursive']:
+                    err = True
+                    results['msg'] = "Source file is either directory or symlink, if it's a directory use 'recursive' argument"
                 else:
-                    if module.params['dest'].endswith(os.path.sep):
-                        module.params['dest'] = module.params['dest'] + os.path.basename(module.params['src'])
-                    guest.upload(module.params['src'], module.params['dest'])
+                    if module.params['recursive']:
+                        guest.copy_in(src, dest)
+                        if not src.endswith(os.path.sep):
+                            dest = dest + os.path.basename(src)
+                    else:
+                        md5sum_src = module.md5(src)
+                        if dest.endswith(os.path.sep):
+                            dest = dest + os.path.basename(src)
+                        # Check if destination file exists on guest image
+                        if guest.is_file(dest):
+                            md5sum_dest = guest.checksum("md5", dest)
+                        # If md5sum of source file and dest file are different, upload file to guest
+                        if md5sum_src != md5sum_dest:
+                            results['changed'] = True
+                            guest.upload(src, dest)
+
             except Exception as e:
                 err = True
                 results['failed'] = True
                 results['msg'] = str(e)
 
             if md5sum_src:
-                md5sum_dest = guest.checksum("md5", module.params['dest'])
-
-            if md5sum_src != md5sum_dest:
-                err = True
-                results['failed'] = True
-                results['msg'] = 'Uploaded file does not match source file md5 checksum'
+                md5sum_dest = guest.checksum("md5", dest)
 
             if not err:
-                results['changed'] = True
-                results['result'] = {
-                    'src': module.params['src'],
-                    'dest': module.params['dest']
-                }
+                results['src'] = src
+                '''
+                Not using 'dest' in results due to
+                'ansible.module_utils.basic' containing the method
+                'add_path_info' which attempts to retrieve info
+                regarding the path which does not exist on target host
+                (Fixed in Ansible 2.8,
+                commit: cc9c72d6f845710b24e952670b534a57f6948513)
+                '''
+                results['guest_dest'] = dest
 
                 if md5sum_src and md5sum_dest:
                     results['md5'] = md5sum_src
@@ -172,7 +186,6 @@ def main():
             image=dict(required=True, type='str'),
             src=dict(required=True, type='path'),
             dest=dict(required=True, type='path'),
-            remote_src=dict(required=False, type='bool', default=False),
             recursive=dict(required=False, type='bool', default=False),
             automount=dict(required=False, type='bool', default=True),
             network=dict(required=False, type='bool', default=True),
