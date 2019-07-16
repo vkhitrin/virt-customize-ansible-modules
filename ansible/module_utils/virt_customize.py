@@ -25,11 +25,6 @@ class guest():
 
     def __init__(self, module):
 
-        if HAS_GUESTFS is False:
-            results = {}
-            results['msg'] = "libguestfs Python bindings are required for this module"
-            self.module.fail_json(**results)
-
         self.mount = False
         self.automount = False
         self.module = module
@@ -37,6 +32,11 @@ class guest():
         self.network = False
         self.image = None
         self.se_relabel = False
+
+        if HAS_GUESTFS is False:
+            results = {}
+            results['msg'] = "libguestfs Python bindings are required for this module"
+            self.module.fail_json(**results)
 
     def bootstrap(self):
 
