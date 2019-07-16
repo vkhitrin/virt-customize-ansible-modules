@@ -12,7 +12,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'supported_by': 'community'}
 
 DOCUMENTATION = '''
-module: virt_customize_users
+module: virt_customize_user
 short_description: Manages users in guest image
 description:
     - Manages users in guest image
@@ -53,21 +53,21 @@ author:
 
 EXAMPLES = '''
 - name: Creates a user
-  virt_customize_users:
+  virt_customize_user:
     image: /tmp/rhel7-5.qcow2
     user: test_user
     password: test_password
     state: present
 
 - name: Change password to an existing user
-  virt_customize_users:
+  virt_customize_user:
     image: /tmp/rhel7-5.qcow2
     user: root
     password: root_password
     state: present
 
 - name: Delete a user
-  virt_customize_users:
+  virt_customize_user:
     image: /tmp/rhel7-5.qcow2
     user: root
     password: root_password

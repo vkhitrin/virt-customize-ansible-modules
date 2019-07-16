@@ -8,7 +8,7 @@ Full documentation(ansible-doc) is present inside the module.
 |:------------------------:|:--------------------------:|:----------------------------------------------------------------------------:|
 | virt_customize_command   | Execute commands           | [doc](/ansible/modules/virt_customize/virt_customize_command.py#L14-L41)    |
 | virt_customize_pakacge   | Manage packages            | [doc](/ansible/modules/virt_customize/virt_customize_package.py#L14-L123)    |
-| virt_customize_users     | Manage users               | [doc](/ansible/modules/virt_customize/virt_customize_users.py#L14-L91)       |
+| virt_customize_user      | Manage users               | [doc](/ansible/modules/virt_customize/virt_customize_user.py#L14-L91)        |
 | virt_customize_download  | Fetch files                | [doc](/ansible/modules/virt_customize/virt_customize_download.py#L14-L101)   |
 | virt_customize_upload    | Upload files               | [doc](/ansible/modules/virt_customize/virt_customize_upload.py#L14-L98)      |
 
