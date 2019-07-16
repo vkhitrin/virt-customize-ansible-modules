@@ -20,15 +20,17 @@ On Ansible Host:
 * Python >= 2.7.5 || Python >= 3.4
 * libguestfs python bindings:
     * System:
-      If your distribution's package manager contains 'python-libguestfs', install it (via `yum`, `apt` ...)
-    * Running in a virtual environment:
-      If a virtual environment is used, refer to [guestfs python bindings in a virtualenv](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv)
+      If your distribution's package manager contains `python-libguestfs`, install it (via `yum`, `apt` ...)
+    * pip:
+      If a virtual environment is used or you do not have a pre packaged `python-libguestfs`, refer to [guestfs python bindings in a virtualenv](http://libguestfs.org/guestfs-python.3.html#using-python-bindings-in-a-virtualenv)
       In order to install via pip download the relevant version from `http://download.libguestfs.org/python/`
       Example, `http://download.libguestfs.org/python/guestfs-1.36.10.tar.gz`
 
-## Compatability Matrix
+## Compatibility Matrix
 :heavy_check_mark: - Fully Supported and tested
+
 :heavy_exclamation_mark: - Supported and not tested or partial support
+
 :x: - Not supported
 
 | Distro             | Supported                | Notes           |
@@ -40,12 +42,18 @@ On Ansible Host:
 
 ## Documentation
 
-Please refer to [repo's documentation](/docs) for more infromation
+Please refer to [repo's documentation](/docs) for more information
 
 ## Installation
 
-**TODO:** Host on PyPI
+TODO: Host on PyPI
 
+### Install from remote:
+```
+pip install git+https://github.com/vkhitrin/virt-customize-ansible-modules
+```
+
+### Install from cloned repo
 ```
 git clone https://github.com/VKhitrin/virt-customize-ansible-modules
 cd virt-cusomize-ansible-modules
