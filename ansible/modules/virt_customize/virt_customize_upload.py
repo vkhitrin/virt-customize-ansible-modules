@@ -125,56 +125,51 @@ def upload(guest, module):
         results['failed'] = True
         results['msg'] = 'Source path {path} not accessable'.format(path=src)
 
-    if module.params['automount']:
-        if not err:
-            try:
-                # Check if source path is a file and not a directory/symlink
-                if not os.path.isfile(src) and not module.params['recursive']:
-                    err = True
-                    results['msg'] = "Source file is either directory or symlink, if it's a directory use 'recursive' argument"
-                else:
-                    if module.params['recursive']:
-                        guest.copy_in(src, dest)
-                        if not src.endswith(os.path.sep):
-                            dest = dest + os.path.basename(src)
-                    else:
-                        md5sum_src = module.md5(src)
-                        if dest.endswith(os.path.sep):
-                            dest = dest + os.path.basename(src)
-                        # Check if destination file exists on guest image
-                        if guest.is_file(dest):
-                            md5sum_dest = guest.checksum("md5", dest)
-                        # If md5sum of source file and dest file are different, upload file to guest
-                        if md5sum_src != md5sum_dest:
-                            results['changed'] = True
-                            guest.upload(src, dest)
-
-            except Exception as e:
+    if not err:
+        try:
+            # Check if source path is a file and not a directory/symlink
+            if not os.path.isfile(src) and not module.params['recursive']:
                 err = True
-                results['failed'] = True
-                results['msg'] = str(e)
+                results['msg'] = "Source file is either directory or symlink, if it's a directory use 'recursive' argument"
+            else:
+                if module.params['recursive']:
+                    guest.copy_in(src, dest)
+                    if not src.endswith(os.path.sep):
+                        dest = dest + os.path.basename(src)
+                else:
+                    md5sum_src = module.md5(src)
+                    if dest.endswith(os.path.sep):
+                        dest = dest + os.path.basename(src)
+                    # Check if destination file exists on guest image
+                    if guest.is_file(dest):
+                        md5sum_dest = guest.checksum("md5", dest)
+                    # If md5sum of source file and dest file are different, upload file to guest
+                    if md5sum_src != md5sum_dest:
+                        results['changed'] = True
+                        guest.upload(src, dest)
 
-            if md5sum_src:
-                md5sum_dest = guest.checksum("md5", dest)
+        except Exception as e:
+            err = True
+            results['failed'] = True
+            results['msg'] = str(e)
 
-            if not err:
-                results['src'] = src
-                '''
-                Not using 'dest' in results due to
-                'ansible.module_utils.basic' containing the method
-                'add_path_info' which attempts to retrieve info
-                regarding the path which does not exist on target host
-                (Fixed in Ansible 2.8,
-                commit: cc9c72d6f845710b24e952670b534a57f6948513)
-                '''
-                results['guest_dest'] = dest
+        if md5sum_src:
+            md5sum_dest = guest.checksum("md5", dest)
 
-                if md5sum_src and md5sum_dest:
-                    results['md5'] = md5sum_src
+        if not err:
+            results['src'] = src
+            '''
+            Not using 'dest' in results due to
+            'ansible.module_utils.basic' containing the method
+            'add_path_info' which attempts to retrieve info
+            regarding the path which does not exist on target host
+            (Fixed in Ansible 2.8,
+            commit: cc9c72d6f845710b24e952670b534a57f6948513)
+            '''
+            results['guest_dest'] = dest
 
-    else:
-        err = True
-        results['msg'] = "automount is false, can't proceed with this module"
+            if md5sum_src and md5sum_dest:
+                results['md5'] = md5sum_src
 
     return results, err
 

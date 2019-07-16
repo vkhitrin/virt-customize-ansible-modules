@@ -107,45 +107,45 @@ def users(guest, module):
     }
     err = False
 
-    if module.params['automount']:
-        try:
-            guest.sh_lines('id -u {}'.format(user_name))
-            user_exists = True
-        except Exception:
-            user_exists = False
+    try:
+        guest.sh_lines('id -u {}'.format(user_name))
+        user_exists = True
+    except Exception:
+        user_exists = False
 
-        if state == 'present':
-            if user_exists:
-                try:
-                    guest.sh_lines('echo {u}:{p} | chpasswd'.format(u=user_name,
-                                                                    p=user_password))
-                except Exception as e:
-                    err = True
-                    results['failed'] = True
-                    results['msg'] = str(e)
+    if state == 'present':
+        if user_exists:
+            try:
+                guest.sh_lines('echo {u}:{p} | chpasswd'.format(u=user_name,
+                                                                p=user_password))
+            except Exception as e:
+                err = True
+                results['failed'] = True
+                results['msg'] = str(e)
 
-            else:
-                try:
-                    guest.sh_lines('useradd {user}'.format(user=user_name))
-                    guest.sh_lines('{u}:{p} | chpasswd'.format(u=user_name,
-                                                               p=user_password))
-                except Exception as e:
-                    err = True
-                    results['failed'] = True
-                    results['msg'] = str(e)
+        else:
+            try:
+                guest.sh_lines('useradd {user}'.format(user=user_name))
+                guest.sh_lines('{u}:{p} | chpasswd'.format(u=user_name,
+                                                           p=user_password))
+            except Exception as e:
+                err = True
+                results['failed'] = True
+                results['msg'] = str(e)
 
-        elif state == 'absent':
-            if user_exists:
-                try:
-                    guest.sh_lines('userdel {user}'.format(user=user_name))
-                except Exception as e:
-                    err = True
-                    results['failed'] = True
-                    results['msg'] = str(e)
+    elif state == 'absent':
+        if user_exists:
+            try:
+                guest.sh_lines('userdel {user}'.format(user=user_name))
+            except Exception as e:
+                err = True
+                results['failed'] = True
+                results['msg'] = str(e)
 
-        if not err:
-            results['changed'] = True
-            results['results'].append('{u} is {s}'.format(u=user_name, s=state))
+    if not err:
+        results['changed'] = True
+        results['results'].append('{u} is {s}'.format(u=user_name, s=state))
+
     return results, err
 
 

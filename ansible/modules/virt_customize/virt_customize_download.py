@@ -118,41 +118,36 @@ def download(guest, module):
     src = module.params['src']
     dest = module.params['dest']
 
-    if module.params['automount']:
-        try:
-            # Check if source path is a file and not a directory/symlink
-            if not guest.is_file(src) and not module.params['recursive']:
-                err = True
-                results['msg'] = "Source file is either directory or symlink, if it's a directory use 'recursive' argument"
-            else:
-                if module.params['recursive']:
-                    if not src.endswith(os.path.sep):
-                        dest = dest + os.path.basename(src)
-                    guest.copy_out(src, dest)
-                else:
-                    md5sum_src = guest.checksum("md5", src)
-                    if dest.endswith(os.path.sep):
-                        dest = dest + os.path.basename(src)
-                    # Check if destination file exists on host
-                    if os.path.isfile(dest):
-                        md5sum_dest = module.md5(dest)
-                    # If md5sum of source file and dest file are different, download file from guest
-                    if md5sum_src != md5sum_dest:
-                        results['changed'] = True
-                        guest.download(src, dest)
-
-        except Exception as e:
+    try:
+        # Check if source path is a file and not a directory/symlink
+        if not guest.is_file(src) and not module.params['recursive']:
             err = True
-            results['failed'] = True
-            results['msg'] = str(e)
+            results['msg'] = "Source file is either directory or symlink, if it's a directory use 'recursive' argument"
+        else:
+            if module.params['recursive']:
+                if not src.endswith(os.path.sep):
+                    dest = dest + os.path.basename(src)
+                guest.copy_out(src, dest)
+            else:
+                md5sum_src = guest.checksum("md5", src)
+                if dest.endswith(os.path.sep):
+                    dest = dest + os.path.basename(src)
+                # Check if destination file exists on host
+                if os.path.isfile(dest):
+                    md5sum_dest = module.md5(dest)
+                # If md5sum of source file and dest file are different, download file from guest
+                if md5sum_src != md5sum_dest:
+                    results['changed'] = True
+                    guest.download(src, dest)
 
-        if not err:
-            results['md5sum'] = md5sum_src
-            results['dest'] = dest
-
-    else:
+    except Exception as e:
         err = True
-        results['msg'] = "automount is false, can't proceed with this module"
+        results['failed'] = True
+        results['msg'] = str(e)
+
+    if not err:
+        results['md5sum'] = md5sum_src
+        results['dest'] = dest
 
     return results, err
 

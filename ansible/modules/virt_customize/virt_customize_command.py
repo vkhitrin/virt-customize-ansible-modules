@@ -163,33 +163,28 @@ def execute(guest, module):
 
     results[exec_method] = {}
 
-    if module.params['automount']:
-        for cmd in commands:
-            try:
-                if module.params['shell']:
-                    result = guest.sh(cmd)
-                elif module.params['command']:
-                    # Split sentence into words using regular expressions
-                    cmd_args = re.findall('([^\s]+)', cmd)
-                    result = guest.command(cmd_args)
-            except Exception as e:
-                err = True
-                results['failed'] = True
-                error_message = results['msg'] = str(e)
+    for cmd in commands:
+        try:
+            if module.params['shell']:
+                result = guest.sh(cmd)
+            elif module.params['command']:
+                # Split sentence into words using regular expressions
+                cmd_args = re.findall('([^\s]+)', cmd)
+                result = guest.command(cmd_args)
+        except Exception as e:
+            err = True
+            results['failed'] = True
+            error_message = results['msg'] = str(e)
 
-            # Init command dict
-            results[exec_method][cmd] = dict.fromkeys(['stdout', 'stdout_lines', 'stderr'], '')
+        # Init command dict
+        results[exec_method][cmd] = dict.fromkeys(['stdout', 'stdout_lines', 'stderr'], '')
 
-            if not err:
-                results[exec_method][cmd]['stdout'] = result
-                results[exec_method][cmd]['stdout_lines'] = result.split('\n')
+        if not err:
+            results[exec_method][cmd]['stdout'] = result
+            results[exec_method][cmd]['stdout_lines'] = result.split('\n')
 
-            else:
-                results[exec_method][cmd]['stdout'] = error_message
-
-    else:
-        err = True
-        results['msg'] = "automount is false, can't proceed with this module"
+        else:
+            results[exec_method][cmd]['stdout'] = error_message
 
     return results, err
 

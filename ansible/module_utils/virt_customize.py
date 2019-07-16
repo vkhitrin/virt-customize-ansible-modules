@@ -58,13 +58,13 @@ class guest():
         try:
             g.launch()
         except Exception as e:
-            results['msg'] = 'Could not mount guest disk image, python exception:{exception}'.format(str(e))
+            results['msg'] = 'Could not mount guest disk image, python exception:\n    {}'.format(str(e))
             self.module.fail_json(**results)
 
         if self.automount:
             roots = g.inspect_os()
             if len(roots) == 0:
-                results['msg'] = 'No devices were found in guest disk image, python exception:{exception}'.format(str(e))
+                results['msg'] = 'Automount failed, no devices were found in guest disk image'
                 self.module.fail_json(**results)
             for root in roots:
                 mps = g.inspect_get_mountpoints(root)
@@ -72,9 +72,14 @@ class guest():
                     try:
                         g.mount(mps[device], device)
                     except RuntimeError as e:
-                        results['msg'] = "Couldn't mount device inside guest disk image, python exception:{exception}".format(str(e))
+                        results['msg'] = "Couldn't mount device inside guest disk image, python exception:\n    {}".format(str(e))
                         self.module.fail_json(**results)
                 self.mount = True
+
+        # TODO (vkhitrin): Implement an option to supply manual mounts when not using automount
+        else:
+            results['msg'] = "automount is false, can't proceed with this module"
+            self.module.fail_json(**results)
 
         self.handle = g
         return g

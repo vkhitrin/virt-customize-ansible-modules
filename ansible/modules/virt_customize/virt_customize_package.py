@@ -145,91 +145,86 @@ def packages(guest, module):
     response = set()
     err = False
 
-    if module.params['automount']:
-        if module.params['name']:
-            packages_string = ' '.join(module.params['name'])
-            for mount in guest.mounts():
-                package_manager = guest.inspect_get_package_management(mount)
-                # If libguest managed to find package manager, quit loop
-                if package_manager != 'unknown' and package_manager:
-                    break
+    if module.params['name']:
+        packages_string = ' '.join(module.params['name'])
+        for mount in guest.mounts():
+            package_manager = guest.inspect_get_package_management(mount)
+            # If libguest managed to find package manager, quit loop
+            if package_manager != 'unknown' and package_manager:
+                break
 
-            if package_manager in PACKAGE_MANAGERS:
-                try:
-                    result = guest.sh_lines('{command} {packages}'.format(command=PACKAGE_MANAGERS[package_manager][state],
-                                                                          packages=packages_string))
-                except Exception as e:
-                    err = True
-                    results['failed'] = True
-                    results['msg'] = str(e)
+        if package_manager in PACKAGE_MANAGERS:
+            try:
+                result = guest.sh_lines('{command} {packages}'.format(command=PACKAGE_MANAGERS[package_manager][state],
+                                                                      packages=packages_string))
+            except Exception as e:
+                err = True
+                results['failed'] = True
+                results['msg'] = str(e)
 
-                if package_manager in ['yum', 'dnf'] and not err:
-                    results['log'] = '\n'.join(result)
-                    for line in result:
-                        for package in module.params['name']:
-                            if package in line:
-                                if 'Verifying' in line:
-                                    results['changed'] = True
-                                    # Split sentence into words using regular expressions
-                                    invoked_package = re.findall('([^\s]+)', line)[2]
-                                    response.add('{package} is {state}'.format(package=invoked_package, state=state))
-                                elif 'already installed' in line:
-                                    response.add(line.replace('Package ',''))
-                                elif 'No package {package} available.'.format(package=package) in line:
-                                    results['failed'] = True
-                                    results['msg'] = line
+            if package_manager in ['yum', 'dnf'] and not err:
+                results['log'] = '\n'.join(result)
+                for line in result:
+                    for package in module.params['name']:
+                        if package in line:
+                            if 'Verifying' in line:
+                                results['changed'] = True
+                                # Split sentence into words using regular expressions
+                                invoked_package = re.findall('([^\s]+)', line)[2]
+                                response.add('{package} is {state}'.format(package=invoked_package, state=state))
+                            elif 'already installed' in line:
+                                response.add(line.replace('Package ',''))
+                            elif 'No package {package} available.'.format(package=package) in line:
+                                results['failed'] = True
+                                results['msg'] = line
 
-                            if 'No Packages marked for removal' in line:
+                        if 'No Packages marked for removal' in line:
+                            response.add(line)
+
+            elif package_manager == 'apt' and not err:
+                for line in result:
+                    for package in module.params['name']:
+                        if package in line:
+                            if "Unpacking" in line or "Removing" in line:
+                                results['changed'] = True
+                                # Substitute string using regular expression and remove CR
+                                invoked_package = re.sub(r'Unpacking|Removing', '', line).replace(' ...\r', '')
+                                response.add('{package} is {state}'.format(package=invoked_package, state=state))
+                            elif "aready" in line or "not installed" in line:
                                 response.add(line)
 
-                elif package_manager == 'apt' and not err:
-                    for line in result:
-                        for package in module.params['name']:
-                            if package in line:
-                                if "Unpacking" in line or "Removing" in line:
-                                    results['changed'] = True
-                                    # Substitute string using regular expression and remove CR
-                                    invoked_package = re.sub(r'Unpacking|Removing', '', line).replace(' ...\r', '')
-                                    response.add('{package} is {state}'.format(package=invoked_package, state=state))
-                                elif "aready" in line or "not installed" in line:
-                                    response.add(line)
+            if not err:
+                results['results'] = list(sorted(response))
 
-                if not err:
-                    results['results'] = list(sorted(response))
+        else:
+            err = True
+            results['msg'] = 'Package manager {package_manager} is not supported'.format(package_manager=package_manager)
 
-            else:
-                err = True
-                results['msg'] = 'Package manager {package_manager} is not supported'.format(package_manager=package_manager)
+    elif module.params['list']:
+        app_regex = module.params['list']
+        if app_regex != "*":
+            app_query = True
+        else:
+            app_query = False
+        packages_list = []
+        for mount in guest.mounts():
+            apps = guest.inspect_list_applications2(mount)
+            if apps:
+                for app in apps:
+                    packages_list.append('{name}-{version}-{release}-{arch}'.format(name=app['app2_name'],
+                                                                                    version=app['app2_version'],
+                                                                                    release=app['app2_release'],
+                                                                                    arch=app['app2_arch']))
+                    if app_query:
+                        if not re.match(app_regex, app['app2_name']):
+                            del packages_list[-1]
+                break
 
-        elif module.params['list']:
-            app_regex = module.params['list']
-            if app_regex != "*":
-                app_query = True
-            else:
-                app_query = False
-            packages_list = []
-            for mount in guest.mounts():
-                apps = guest.inspect_list_applications2(mount)
-                if apps:
-                    for app in apps:
-                        packages_list.append('{name}-{version}-{release}-{arch}'.format(name=app['app2_name'],
-                                                                                        version=app['app2_version'],
-                                                                                        release=app['app2_release'],
-                                                                                        arch=app['app2_arch']))
-                        if app_query:
-                            if not re.match(app_regex, app['app2_name']):
-                                del packages_list[-1]
-                    break
-
-            if packages_list:
-                results['results'] = packages_list
-            else:
-                err = True
-                results['msg'] = "Packages containing regular expression '{regexp}' not found".format(regexp=app_regex)
-
-    else:
-        err = True
-        results['msg'] = "automount is false, can't proceed with this module"
+        if packages_list:
+            results['results'] = packages_list
+        else:
+            err = True
+            results['msg'] = "Packages containing regular expression '{regexp}' not found".format(regexp=app_regex)
 
     return results, err
 
