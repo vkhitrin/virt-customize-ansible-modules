@@ -180,6 +180,7 @@ def execute(guest, module):
         results[exec_method][cmd] = dict.fromkeys(['stdout', 'stdout_lines', 'stderr'], '')
 
         if not err:
+            results['changed'] = True
             results[exec_method][cmd]['stdout'] = result
             results[exec_method][cmd]['stdout_lines'] = result.split('\n')
 
