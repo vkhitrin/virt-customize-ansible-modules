@@ -1,0 +1,2 @@
+pbr
+ansible >= 2.4.0
