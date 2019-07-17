@@ -105,6 +105,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 import os
 
+
 def download(guest, module):
 
     err = False
@@ -175,6 +176,7 @@ def main():
     if err:
         module.fail_json(**results)
     module.exit_json(**results)
+
 
 if __name__ == '__main__':
     main()

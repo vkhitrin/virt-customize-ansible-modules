@@ -101,7 +101,7 @@ from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule
 
 import os
-import shutil
+
 
 def upload(guest, module):
 
@@ -197,6 +197,7 @@ def main():
     if err:
         module.fail_json(**results)
     module.exit_json(**results)
+
 
 if __name__ == '__main__':
     main()

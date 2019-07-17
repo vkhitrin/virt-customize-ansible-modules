@@ -145,6 +145,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 import re
 
+
 def execute(guest, module):
 
     results = {
@@ -169,7 +170,7 @@ def execute(guest, module):
                 result = guest.sh(cmd)
             elif module.params['command']:
                 # Split sentence into words using regular expressions
-                cmd_args = re.findall('([^\s]+)', cmd)
+                cmd_args = re.findall(r'([^\s]+)', cmd)
                 result = guest.command(cmd_args)
         except Exception as e:
             err = True

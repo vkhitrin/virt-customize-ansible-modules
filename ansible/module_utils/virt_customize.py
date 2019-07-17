@@ -86,7 +86,6 @@ class guest():
 
     def close(self):
 
-
         self.image = self.module.params.get('image')
         if self.handle:
             if self.mount:

@@ -170,10 +170,10 @@ def packages(guest, module):
                             if 'Verifying' in line:
                                 results['changed'] = True
                                 # Split sentence into words using regular expressions
-                                invoked_package = re.findall('([^\s]+)', line)[2]
+                                invoked_package = re.findall(r'([^\s]+)', line)[2]
                                 response.add('{package} is {state}'.format(package=invoked_package, state=state))
                             elif 'already installed' in line:
-                                response.add(line.replace('Package ',''))
+                                response.add(line.replace('Package ', ''))
                             elif 'No package {package} available.'.format(package=package) in line:
                                 results['failed'] = True
                                 results['msg'] = line
@@ -232,8 +232,8 @@ def packages(guest, module):
 def main():
 
     mutual_exclusive_args = [
-            ['name', 'list'],
-            ['list', 'state']
+        ['name', 'list'],
+        ['list', 'state']
     ]
     required_togheter_args = [['name', 'state']]
     required_one_of_args = [['name', 'list']]

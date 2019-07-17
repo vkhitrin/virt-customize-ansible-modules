@@ -93,7 +93,6 @@ RETURN = '''
 from ansible.module_utils.virt_customize import guest
 from ansible.module_utils.basic import AnsibleModule
 
-import re
 
 def users(guest, module):
 
