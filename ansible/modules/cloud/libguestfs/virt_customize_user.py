@@ -90,7 +90,7 @@ RETURN = '''
     ]
 '''
 
-from ansible.module_utils.virt_customize import guest
+from ansible.module_utils.libguestfs.libguestfs import guest
 from ansible.module_utils.basic import AnsibleModule
 
 

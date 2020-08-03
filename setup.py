@@ -6,5 +6,16 @@
 import setuptools
 
 setuptools.setup(
-    setup_requires=['pbr'],
-    pbr=True)
+    name='virt-customize-ansible-modules',
+    version='0.0.3',
+    description='Ansible modules to perform basic libguestfs actions',
+    author='Vadim Khitrin',
+    author_email='me@vkhitrin.com',
+    packages=[
+        'ansible/modules/cloud/libguestfs',
+        'ansible/module_utils/libguestfs'
+    ],
+    install_requires=[
+        'ansible >= 2.4.0'
+    ],
+)

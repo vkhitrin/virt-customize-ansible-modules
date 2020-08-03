@@ -97,7 +97,7 @@ RETURN = '''
     "debug": "d6fe77f000341b5f9a952e744f34901a"
 '''
 
-from ansible.module_utils.virt_customize import guest
+from ansible.module_utils.libguestfs.libguestfs import guest
 from ansible.module_utils.basic import AnsibleModule
 
 import os
