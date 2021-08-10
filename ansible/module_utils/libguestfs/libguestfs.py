@@ -17,10 +17,6 @@ except ImportError:
     HAS_GUESTFS = False
 
 
-def compare(a, b):
-    return len(a) - len(b)
-
-
 class guest():
 
     def __init__(self, module):
@@ -68,9 +64,9 @@ class guest():
                 self.module.fail_json(**results)
             for root in roots:
                 mps = g.inspect_get_mountpoints(root)
-                for device in sorted(mps.keys(), compare):
+                for mountpoint, device in mps.items():
                     try:
-                        g.mount(mps[device], device)
+                        g.mount(device, mountpoint)
                     except RuntimeError as e:
                         results['msg'] = "Couldn't mount device inside guest disk image, python exception:\n    {}".format(str(e))
                         self.module.fail_json(**results)
@@ -105,9 +101,9 @@ class guest():
                     else:
                         self.handle.touch("/.autorelabel")
                 self.handle.umount_all()
-            # Backwards compatability, autosync is enabled by default since libguestfs 1.5.24
+            # Backwards compatibility, autosync is enabled by default since libguestfs 1.5.24
             self.handle.sync()
-            # Shut off applicance before closing handle
+            # Shut off appliance before closing handle
             self.handle.shutdown()
             self.handle.close()
             return True
