@@ -1,5 +1,8 @@
 # virt-customize Ansible Modules
 
+This repository is deprecated in favor of [ansible-libguestfs-collection](https://github.com/vkhitrin/ansible-libguestfs-collection)!
+---
+
 **Note:** This is a POC repo
 
 **Note:** Due to it being a POC repo, code isn't optimized.
